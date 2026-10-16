@@ -14,7 +14,7 @@ const usageText = "usage: narrowfit solve MODEL\n" +
 	"       narrowfit count [--limit N] MODEL\n" +
 	"       narrowfit check MODEL NAME=VALUE...\n" +
 	"       narrowfit explain MODEL\n" +
-	"       narrowfit fmt MODEL\n"
+	"       narrowfit fmt [--check] MODEL\n"
 
 // writeUsage prints the standalone help text.
 func writeUsage(w io.Writer) {
@@ -151,4 +151,47 @@ func writeFormattedModel(w io.Writer, model *core.Model) {
 	for _, line := range model.Text {
 		_, _ = fmt.Fprintln(w, line)
 	}
+}
+
+// writeFmtCheckResult reports whether source statement lines match canonical text.
+// It returns the command's exit code.
+func writeFmtCheckResult(w io.Writer, path, source string, model *core.Model) int {
+	if model == nil {
+		return 1
+	}
+	if strings.HasPrefix(source, "\uFEFF") {
+		source = strings.TrimPrefix(source, "\uFEFF")
+	}
+
+	lineCount := 0
+	statementIndex := 0
+	lines := strings.Split(source, "\n")
+	for lineIndex, line := range lines {
+		if lineIndex < len(lines)-1 && strings.HasSuffix(line, "\r") {
+			line = line[:len(line)-1]
+		}
+		if commentAt := strings.IndexByte(line, '#'); commentAt >= 0 {
+			line = line[:commentAt]
+		}
+		statementText := strings.TrimRight(line, " \t")
+		if strings.Trim(statementText, " \t") == "" {
+			continue
+		}
+
+		if statementText != model.Text[statementIndex] {
+			_, _ = fmt.Fprintf(w, "%s:%d: not canonical, expected %s\n", displayPath(path), lineIndex+1, model.Text[statementIndex])
+			lineCount++
+		}
+		statementIndex++
+	}
+	if lineCount == 0 {
+		_, _ = io.WriteString(w, "ok\n")
+		return 0
+	}
+	if lineCount == 1 {
+		_, _ = io.WriteString(w, "1 line not canonical\n")
+	} else {
+		_, _ = fmt.Fprintf(w, "%d lines not canonical\n", lineCount)
+	}
+	return 1
 }

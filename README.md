@@ -36,7 +36,7 @@ usage: narrowfit solve MODEL
        narrowfit count [--limit N] MODEL
        narrowfit check MODEL NAME=VALUE...
        narrowfit explain MODEL
-       narrowfit fmt MODEL
+       narrowfit fmt [--check] MODEL
 ```
 
 A model is read from the path given as `MODEL`; use `-` to read it from standard input. The complete `magic.model` and the result of `solve magic.model` are shown here.
@@ -101,7 +101,7 @@ Expressions support integer arithmetic, comparisons, logical operators, parenthe
 - `count [--limit N] MODEL` counts solutions without listing their assignments.
 - `check MODEL NAME=VALUE...` checks a complete assignment against variable domains and all constraints.
 - `explain MODEL` reports whether the model is satisfiable or gives a deterministic minimal conflicting set of constraints.
-- `fmt MODEL` prints the model's canonical statements.
+- `fmt [--check] MODEL` prints the model's canonical statements. With `--check` it prints nothing but a verdict: `ok` and exit 0 when every statement line is already written in its canonical form, else one line `FILE:LINE: not canonical, expected TEXT` for each line that is not, a count, and exit 1. Blank lines, comments, line endings and a byte order mark are not compared.
 
 For `all`, the default limit is 20; for `count`, it is 1000000. Both accept `--limit N` or `--limit=N`, where `N` is from 1 through 1000000. If the option occurs more than once, the last value is used. `all` and `count` report when additional solutions exist beyond the limit.
 

@@ -39,7 +39,7 @@ func TestREADMEHasRequiredSectionsAndExamples(t *testing.T) {
 		"       narrowfit count [--limit N] MODEL\n" +
 		"       narrowfit check MODEL NAME=VALUE...\n" +
 		"       narrowfit explain MODEL\n" +
-		"       narrowfit fmt MODEL\n" +
+		"       narrowfit fmt [--check] MODEL\n" +
 		"```"
 	if !strings.Contains(readme, usage) {
 		t.Errorf("README.md does not contain the exact usage block")
