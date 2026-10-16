@@ -28,7 +28,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer, readFile func
 		return 0
 	}
 
-	model, ok := loadModel(parsed.modelPath, stdin, readFile, stderr)
+	model, source, ok := loadModel(parsed.modelPath, stdin, readFile, stderr)
 	if !ok {
 		return 2
 	}
@@ -66,6 +66,9 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer, readFile func
 		conflict, satisfiable := solve.Explain(model)
 		return writeExplainResult(stdout, model, conflict, satisfiable)
 	case "fmt":
+		if parsed.fmtCheck {
+			return writeFmtCheckResult(stdout, parsed.modelPath, source, model)
+		}
 		writeFormattedModel(stdout, model)
 		return 0
 	default:
@@ -76,7 +79,7 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer, readFile func
 
 // loadModel obtains the complete model input from stdin or the injected file
 // reader, then delegates byte validation and parsing to lang.Parse.
-func loadModel(path string, stdin io.Reader, readFile func(path string) ([]byte, error), stderr io.Writer) (*core.Model, bool) {
+func loadModel(path string, stdin io.Reader, readFile func(path string) ([]byte, error), stderr io.Writer) (*core.Model, string, bool) {
 	var (
 		data []byte
 		err  error
@@ -84,27 +87,28 @@ func loadModel(path string, stdin io.Reader, readFile func(path string) ([]byte,
 	if path == "-" {
 		if stdin == nil {
 			writeInputDiagnostic(stderr, path, "cannot read the file")
-			return nil, false
+			return nil, "", false
 		}
 		data, err = io.ReadAll(stdin)
 	} else {
 		if readFile == nil {
 			writeInputDiagnostic(stderr, path, "cannot read the file")
-			return nil, false
+			return nil, "", false
 		}
 		data, err = readFile(path)
 	}
 	if err != nil {
 		writeInputDiagnostic(stderr, path, "cannot read the file")
-		return nil, false
+		return nil, "", false
 	}
 
-	model, modelErr := lang.Parse(string(data))
+	source := string(data)
+	model, modelErr := lang.Parse(source)
 	if modelErr != nil {
 		writeModelDiagnostic(stderr, path, modelErr)
-		return nil, false
+		return nil, "", false
 	}
-	return model, true
+	return model, source, true
 }
 
 // checkAssignment validates names and values in the command's specified order.

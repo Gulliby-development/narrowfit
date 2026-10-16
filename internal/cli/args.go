@@ -25,6 +25,7 @@ type cliArgs struct {
 	command     string
 	modelPath   string
 	limit       int
+	fmtCheck    bool
 	assignments []assignmentText
 }
 
@@ -60,6 +61,10 @@ func parseArgs(args []string) (parsed cliArgs, help bool, err error) {
 
 	for i := 1; i < len(args); i++ {
 		arg := args[i]
+		if command == "fmt" && arg == "--check" {
+			parsed.fmtCheck = true
+			continue
+		}
 		if limitSupported && arg == "--limit" {
 			if i+1 == len(args) {
 				return cliArgs{}, false, core.CliError{Msg: "--limit needs a value"}
