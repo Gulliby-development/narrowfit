@@ -36,6 +36,9 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer, readFile func
 	switch parsed.command {
 	case "solve":
 		values, objective, found := solve.Best(model)
+		if parsed.jsonOutput {
+			return writeSolveJSON(stdout, model, values, objective, found)
+		}
 		return writeSolveResult(stdout, model, values, objective, found)
 	case "all":
 		number := 0

@@ -26,6 +26,7 @@ type cliArgs struct {
 	modelPath   string
 	limit       int
 	fmtCheck    bool
+	jsonOutput  bool
 	assignments []assignmentText
 }
 
@@ -63,6 +64,10 @@ func parseArgs(args []string) (parsed cliArgs, help bool, err error) {
 		arg := args[i]
 		if command == "fmt" && arg == "--check" {
 			parsed.fmtCheck = true
+			continue
+		}
+		if command == "solve" && arg == "--json" {
+			parsed.jsonOutput = true
 			continue
 		}
 		if limitSupported && arg == "--limit" {

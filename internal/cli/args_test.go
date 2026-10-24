@@ -12,7 +12,7 @@ import (
 const (
 	argsDefaultModel = "var x 1..2\n"
 	argsCheckModel   = "var x 1..9\nvar y 1..9\nrequire x < y\n"
-	argsUsage        = "usage: narrowfit solve MODEL\n" +
+	argsUsage        = "usage: narrowfit solve [--json] MODEL\n" +
 		"       narrowfit all [--limit N] MODEL\n" +
 		"       narrowfit count [--limit N] MODEL\n" +
 		"       narrowfit check MODEL NAME=VALUE...\n" +

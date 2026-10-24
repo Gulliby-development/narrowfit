@@ -31,7 +31,7 @@ On Windows, use:
 The command-line forms are:
 
 ```text
-usage: narrowfit solve MODEL
+usage: narrowfit solve [--json] MODEL
        narrowfit all [--limit N] MODEL
        narrowfit count [--limit N] MODEL
        narrowfit check MODEL NAME=VALUE...
@@ -96,7 +96,7 @@ Expressions support integer arithmetic, comparisons, logical operators, parenthe
 
 ## Commands
 
-- `solve MODEL` prints the best assignment, or the first assignment when there is no objective. It prints `no solution` when there is no eligible solution.
+- `solve [--json] MODEL` prints the best assignment, or the first assignment when there is no objective. It prints `no solution` when there is no eligible solution. With `--json` it prints one line of JSON instead (see [JSON output](#json-output)).
 - `all [--limit N] MODEL` lists solutions in lexicographic order of their values in variable declaration order.
 - `count [--limit N] MODEL` counts solutions without listing their assignments.
 - `check MODEL NAME=VALUE...` checks a complete assignment against variable domains and all constraints.
@@ -104,6 +104,20 @@ Expressions support integer arithmetic, comparisons, logical operators, parenthe
 - `fmt [--check] MODEL` prints the model's canonical statements. With `--check` it prints nothing but a verdict: `ok` and exit 0 when every statement line is already written in its canonical form, else one line `FILE:LINE: not canonical, expected TEXT` for each line that is not, a count, and exit 1. Blank lines, comments, line endings and a byte order mark are not compared.
 
 For `all`, the default limit is 20; for `count`, it is 1000000. Both accept `--limit N` or `--limit=N`, where `N` is from 1 through 1000000. If the option occurs more than once, the last value is used. `all` and `count` report when additional solutions exist beyond the limit.
+
+## JSON output
+
+`solve --json` writes one line: an object whose member `solution` holds the variables in declaration order (`null` when there is no solution, with exit code 1) and, when the model has an objective, a member `objective` after it. There are no spaces. `--json` is an option of `solve` only. For a model that declares `var x 1..3`, `var y 1..3` and `maximize x - y`:
+
+```sh
+narrowfit solve --json model.txt
+```
+
+prints:
+
+```text
+{"solution":{"x":3,"y":1},"objective":2}
+```
 
 ## Exit codes
 

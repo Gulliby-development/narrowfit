@@ -34,7 +34,7 @@ func TestREADMEHasRequiredSectionsAndExamples(t *testing.T) {
 	}
 
 	usage := "```text\n" +
-		"usage: narrowfit solve MODEL\n" +
+		"usage: narrowfit solve [--json] MODEL\n" +
 		"       narrowfit all [--limit N] MODEL\n" +
 		"       narrowfit count [--limit N] MODEL\n" +
 		"       narrowfit check MODEL NAME=VALUE...\n" +
@@ -85,8 +85,8 @@ func TestREADMEHasRequiredSectionsAndExamples(t *testing.T) {
 		t.Errorf("README.md does not contain the exact solve magic.model output")
 	}
 
-	if got := strings.Count(readme, "```"); got != 14 {
-		t.Errorf("README.md has %d code fences, want 14 for the documented blocks", got)
+	if got := strings.Count(readme, "```"); got != 18 {
+		t.Errorf("README.md has %d code fences, want 18 for the documented blocks", got)
 	}
 }
 
