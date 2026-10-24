@@ -9,7 +9,7 @@ import (
 	"github.com/Gulliby-development/narrowfit/internal/core"
 )
 
-const usageText = "usage: narrowfit solve MODEL\n" +
+const usageText = "usage: narrowfit solve [--json] MODEL\n" +
 	"       narrowfit all [--limit N] MODEL\n" +
 	"       narrowfit count [--limit N] MODEL\n" +
 	"       narrowfit check MODEL NAME=VALUE...\n" +
@@ -68,6 +68,33 @@ func writeSolveResult(w io.Writer, model *core.Model, values []int, objective in
 	if model.Obj != nil {
 		_, _ = fmt.Fprintf(w, "objective = %d\n", objective)
 	}
+	return 0
+}
+
+// writeSolveJSON prints the selected assignment and objective as one compact
+// JSON object, or the no-solution result. It returns the command's exit code.
+func writeSolveJSON(w io.Writer, model *core.Model, values []int, objective int64, ok bool) int {
+	if !ok || model == nil {
+		_, _ = io.WriteString(w, "{\"solution\":null}\n")
+		return 1
+	}
+	var b strings.Builder
+	b.WriteString("{\"solution\":{")
+	for i, variable := range model.Vars {
+		if i >= len(values) {
+			break
+		}
+		if i > 0 {
+			b.WriteByte(',')
+		}
+		_, _ = fmt.Fprintf(&b, "\"%s\":%d", variable.Name, values[i])
+	}
+	b.WriteString("}")
+	if model.Obj != nil {
+		_, _ = fmt.Fprintf(&b, ",\"objective\":%d", objective)
+	}
+	b.WriteString("}\n")
+	_, _ = io.WriteString(w, b.String())
 	return 0
 }
 

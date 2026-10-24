@@ -377,7 +377,7 @@ func TestFmtCheckPreservesFmtHelpAndUnsatisfiableBehavior(t *testing.T) {
 
 	t.Run("standalone help has the updated exact usage", func(t *testing.T) {
 		got := fmtCheckRun([]string{"--help"}, bytes.NewReader(nil), nil, nil)
-		want := "usage: narrowfit solve MODEL\n" +
+		want := "usage: narrowfit solve [--json] MODEL\n" +
 			"       narrowfit all [--limit N] MODEL\n" +
 			"       narrowfit count [--limit N] MODEL\n" +
 			"       narrowfit check MODEL NAME=VALUE...\n" +
