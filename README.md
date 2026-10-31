@@ -34,7 +34,7 @@ The command-line forms are:
 usage: narrowfit solve [--json] MODEL
        narrowfit all [--limit N] MODEL
        narrowfit count [--limit N] MODEL
-       narrowfit check MODEL NAME=VALUE...
+       narrowfit check [--total] MODEL NAME=VALUE...
        narrowfit explain MODEL
        narrowfit fmt [--check] MODEL
 ```
@@ -99,7 +99,7 @@ Expressions support integer arithmetic, comparisons, logical operators, parenthe
 - `solve [--json] MODEL` prints the best assignment, or the first assignment when there is no objective. It prints `no solution` when there is no eligible solution. With `--json` it prints one line of JSON instead (see [JSON output](#json-output)).
 - `all [--limit N] MODEL` lists solutions in lexicographic order of their values in variable declaration order.
 - `count [--limit N] MODEL` counts solutions without listing their assignments.
-- `check MODEL NAME=VALUE...` checks a complete assignment against variable domains and all constraints.
+- `check [--total] MODEL NAME=VALUE...` checks a complete assignment against variable domains and all constraints. With `--total` it prints one line `K of N violated` instead of the violated statements, where N is the number of constraint statements of the model (variable and objective statements do not count) and K the number the assignment violates; the exit code is 1 when K is above 0, else 0. `--total` is an option of `check` only; it may come anywhere in the command line and may be repeated. Errors in the assignment are reported as before.
 - `explain MODEL` reports whether the model is satisfiable or gives a deterministic minimal conflicting set of constraints.
 - `fmt [--check] MODEL` prints the model's canonical statements. With `--check` it prints nothing but a verdict: `ok` and exit 0 when every statement line is already written in its canonical form, else one line `FILE:LINE: not canonical, expected TEXT` for each line that is not, a count, and exit 1. Blank lines, comments, line endings and a byte order mark are not compared.
 

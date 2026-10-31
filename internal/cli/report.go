@@ -12,7 +12,7 @@ import (
 const usageText = "usage: narrowfit solve [--json] MODEL\n" +
 	"       narrowfit all [--limit N] MODEL\n" +
 	"       narrowfit count [--limit N] MODEL\n" +
-	"       narrowfit check MODEL NAME=VALUE...\n" +
+	"       narrowfit check [--total] MODEL NAME=VALUE...\n" +
 	"       narrowfit explain MODEL\n" +
 	"       narrowfit fmt [--check] MODEL\n"
 
@@ -141,6 +141,25 @@ func writeCheckResult(w io.Writer, model *core.Model, values []int) int {
 		return 1
 	}
 	_, _ = io.WriteString(w, "ok\n")
+	return 0
+}
+
+// writeCheckTotal prints how many constraint statements the assignment violates,
+// out of all of them, and returns the command's exit code.
+func writeCheckTotal(w io.Writer, model *core.Model, values []int) int {
+	if model == nil {
+		return 1
+	}
+	violated := 0
+	for _, statement := range model.Stmts {
+		if !statement.C.Holds(values) {
+			violated++
+		}
+	}
+	_, _ = fmt.Fprintf(w, "%d of %d violated\n", violated, len(model.Stmts))
+	if violated > 0 {
+		return 1
+	}
 	return 0
 }
 

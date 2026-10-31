@@ -64,6 +64,9 @@ func Run(args []string, stdin io.Reader, stdout, stderr io.Writer, readFile func
 			writeDiagnostic(stderr, err.Error())
 			return 2
 		}
+		if parsed.checkTotal {
+			return writeCheckTotal(stdout, model, values)
+		}
 		return writeCheckResult(stdout, model, values)
 	case "explain":
 		conflict, satisfiable := solve.Explain(model)
