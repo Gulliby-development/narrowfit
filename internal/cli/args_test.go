@@ -15,7 +15,7 @@ const (
 	argsUsage        = "usage: narrowfit solve [--json] MODEL\n" +
 		"       narrowfit all [--limit N] MODEL\n" +
 		"       narrowfit count [--limit N] MODEL\n" +
-		"       narrowfit check MODEL NAME=VALUE...\n" +
+		"       narrowfit check [--total] MODEL NAME=VALUE...\n" +
 		"       narrowfit explain MODEL\n" +
 		"       narrowfit fmt [--check] MODEL\n"
 )

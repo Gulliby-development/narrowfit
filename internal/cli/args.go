@@ -27,6 +27,7 @@ type cliArgs struct {
 	limit       int
 	fmtCheck    bool
 	jsonOutput  bool
+	checkTotal  bool
 	assignments []assignmentText
 }
 
@@ -68,6 +69,10 @@ func parseArgs(args []string) (parsed cliArgs, help bool, err error) {
 		}
 		if command == "solve" && arg == "--json" {
 			parsed.jsonOutput = true
+			continue
+		}
+		if command == "check" && arg == "--total" {
+			parsed.checkTotal = true
 			continue
 		}
 		if limitSupported && arg == "--limit" {
